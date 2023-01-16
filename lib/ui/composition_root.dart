@@ -12,7 +12,7 @@ import '../states_management/products/product_cubit.dart' as product_cubit;
 import '../states_management/taxonomy/taxonomy_cubit.dart' as taxonomy_cubit;
 import '../states_management/banners/banners_cubit.dart' as banners_cubit;
 import '../ui/pages/home/home.dart';
-import 'pages/products/products.dart';
+import 'pages/shop/shop.dart';
 import 'utils/bottom_nav_bar.dart';
 
 void printWrapped(String text) =>
@@ -102,7 +102,7 @@ class CompositionRoot {
       BlocProvider<product_cubit.ProductCubit>(
         create: (BuildContext context) => productsCubit,
       ),
-    ], child: Products());
+    ], child: Shop());
   }
 
   // static Widget _composeSearchResultPageWith(String query) {

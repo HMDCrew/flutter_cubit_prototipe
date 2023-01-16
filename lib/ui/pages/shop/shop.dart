@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import '../../../states_management/products/product_cubit.dart' as prodCubit;
 import '../../../states_management/products/product_states.dart' as prodStates;
+import '../../utils/inc/product_card.dart';
 
-class Products extends StatefulWidget {
+class Shop extends StatefulWidget {
   final List? products = [];
-  Products({Key? key, List? products}) : super(key: key);
+  Shop({Key? key, List? products}) : super(key: key);
 
   @override
-  State<Products> createState() => _ProductsState();
+  State<Shop> createState() => _ShopState();
 }
 
-class _ProductsState extends State<Products> {
+class _ShopState extends State<Shop> {
   prodStates.PageLoaded? productsLoaded;
 
   @override
@@ -33,13 +35,44 @@ class _ProductsState extends State<Products> {
         }
 
         if (productsLoaded == null && widget.products!.isEmpty) {
-          return const Center(child: CircularProgressIndicator());
+          ProductCard productPlace = const ProductCard(
+              id: 0, name: 'Loading...', loading: true);
+          final List<Widget> placeShop = <Widget>[
+            productPlace,
+            productPlace,
+            productPlace,
+            productPlace
+          ];
+
+          return Container(
+            margin: const EdgeInsets.all(16),
+            child: MasonryGridView.count(
+                mainAxisSpacing: 11,
+                crossAxisSpacing: 11,
+                crossAxisCount: 2,
+                itemCount: placeShop.length,
+                itemBuilder: (context, index) {
+                  return placeShop[index];
+                }),
+          );
         }
 
-        return const Center(
-          child: Text(
-            'loaded',
-            style: TextStyle(color: Colors.white),
+        return Container(
+          margin: const EdgeInsets.all(16),
+          child: MasonryGridView.count(
+            mainAxisSpacing: 11,
+            crossAxisSpacing: 11,
+            crossAxisCount: 2,
+            itemCount: widget.products!.length,
+            itemBuilder: (context, index) {
+              return ProductCard(
+                id: widget.products![index]['id'],
+                name: widget.products![index]['name'],
+                image: widget.products![index]['image_uri'],
+                price: widget.products![index]['price'],
+                symbol: widget.products![index]['symbol'],
+              );
+            },
           ),
         );
       },
