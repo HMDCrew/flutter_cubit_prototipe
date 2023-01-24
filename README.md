@@ -1,4 +1,4 @@
-# flutter_cubit_skeleton
+# flutter_cubit_skeleton_routed
 
 A new Flutter project.
 

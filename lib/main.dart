@@ -1,32 +1,46 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_cubit_skeleton_routed/logic/cubit/internet_cubit.dart';
+import 'package:flutter_cubit_skeleton_routed/presentation/router/app_router.dart';
 
-import 'ui/composition_root.dart';
+import 'logic/cubit/auth_cubit.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await CompositionRoot.configure();
-  final screenToShow = await CompositionRoot.start();
-  runApp(MyApp(screenToShow));
+void main() {
+  runApp(Main(
+    appRouter: AppRouter(),
+    connectivity: Connectivity(),
+  ));
 }
 
-class MyApp extends StatelessWidget {
-  final Widget startPage;
-  const MyApp(this.startPage, {super.key});
+class Main extends StatelessWidget {
+  final AppRouter appRouter;
+  final Connectivity connectivity;
+  const Main({Key? key, required this.appRouter, required this.connectivity})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = ThemeData(
-        //textTheme: GoogleFonts.montserratTextTheme(Theme.of(context).textTheme),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        scaffoldBackgroundColor: const Color(0xFF333333));
-
-    return MaterialApp(
-      title: 'Flutter Skeleton',
-      theme: theme.copyWith(
-        colorScheme: theme.colorScheme
-            .copyWith(secondary: const Color.fromARGB(255, 251, 176, 59)),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<InternetCubit>(
+          create: (internetContext) =>
+              InternetCubit(connectivity: connectivity),
+        ),
+        BlocProvider<AuthCubit>(
+          create: (authContext) => AuthCubit(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Skeleton routed',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          scaffoldBackgroundColor: const Color(0xFF333333),
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        onGenerateRoute: appRouter.onGeneratedRoute,
+        initialRoute: '/',
       ),
-      home: SafeArea(child: startPage),
     );
   }
 }

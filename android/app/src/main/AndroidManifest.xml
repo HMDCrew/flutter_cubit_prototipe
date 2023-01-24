@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.flutter_cubit_skeleton">
+    package="com.example.flutter_cubit_skeleton_routed">
    <application
-        android:label="flutter_cubit_skeleton"
+        android:label="flutter_cubit_skeleton_routed"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
