@@ -24,9 +24,11 @@ class MySlider extends StatelessWidget {
         SizedBox(
           height: height,
           child: PageView(
-              scrollDirection: Axis.horizontal,
-              controller: pageController,
-              children: slides),
+            physics: const BouncingScrollPhysics(),
+            scrollDirection: Axis.horizontal,
+            controller: pageController,
+            children: slides,
+          ),
         ),
         SmoothPageIndicator(
           controller: pageController,

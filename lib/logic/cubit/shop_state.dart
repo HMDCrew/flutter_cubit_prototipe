@@ -15,13 +15,15 @@ class ShopLoading extends ShopState {
 }
 
 class ShopLoaded extends ShopState {
-  final List _products;
+  List _products;
   List get products => _products;
 
-  const ShopLoaded(this._products);
+  ShopLoaded(this._products);
   
   @override
   List<Object> get props => [_products];
+
+  void update(List newProducts) => _products = newProducts;
 }
 
 class ProductLoaded extends ShopState {

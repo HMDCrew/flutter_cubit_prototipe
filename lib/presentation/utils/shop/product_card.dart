@@ -9,15 +9,19 @@ class ProductCard extends StatelessWidget {
   final String? price;
   final String symbol;
   final bool loading;
-  const ProductCard(
-      {Key? key,
-      required this.id,
-      required this.name,
-      this.image,
-      this.price,
-      this.symbol = '€',
-      this.loading = false})
-      : super(key: key);
+  final Function? onTap;
+  const ProductCard({
+    Key? key,
+    required this.id,
+    required this.name,
+    this.image,
+    this.price,
+    this.symbol = '€',
+    this.loading = false,
+    this.onTap,
+  }) : super(key: key);
+
+  get productState => this;
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +39,8 @@ class ProductCard extends StatelessWidget {
 
     return ElevatedButton(
       onPressed: () {
-        if (!loading) {
-          print(id);
-          print(name);
+        if (!loading && onTap != null) {
+          onTap!(productState);
         }
       },
       style: ButtonStyle(
