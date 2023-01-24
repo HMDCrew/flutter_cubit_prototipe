@@ -27,7 +27,9 @@ class BottomBar extends StatelessWidget {
         iconSelected: const Color.fromARGB(255, 30, 30, 30),
         bgiconSelected: Colors.white,
       ),
-      body: child,
+      body: SafeArea(
+        child: child,
+      ),
     );
   }
 }

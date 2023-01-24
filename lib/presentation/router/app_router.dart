@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../logic/cubit/banners_cubit.dart';
+import '../../logic/cubit/shop_cubit.dart';
 import '../screens/home.dart';
 import '../screens/cart.dart';
 import '../screens/favorites.dart';
@@ -21,12 +24,20 @@ class AppRouter {
     switch (routeSettings.name) {
       case '/':
         return PageRouteBuilder(
-          pageBuilder: (context, animation1, animation2) => BottomBar(
-            routeSettings.name,
-            arguments: routeSettings.arguments,
-            routesIcons: routeIcons,
-            child: const Home(),
-          ),
+          pageBuilder: (context, animation1, animation2) {
+            // ask api resources
+            BlocProvider.of<BannersCubit>(context).getBanners(
+              page: 0,
+              includeMetas: 'banner_text, color_title, click_through_url',
+            );
+
+            return BottomBar(
+              routeSettings.name,
+              arguments: routeSettings.arguments,
+              routesIcons: routeIcons,
+              child: const Home(),
+            );
+          },
           transitionDuration: Duration.zero,
           reverseTransitionDuration: Duration.zero,
         );
@@ -45,12 +56,17 @@ class AppRouter {
 
       case '/shop':
         return PageRouteBuilder(
-          pageBuilder: (context, animation1, animation2) => BottomBar(
-            routeSettings.name,
-            arguments: routeSettings.arguments,
-            routesIcons: routeIcons,
-            child: const Shop(),
-          ),
+          pageBuilder: (context, animation1, animation2) {
+            // ask api resources
+            BlocProvider.of<ShopCubit>(context).getProducts(page: 0);
+
+            return BottomBar(
+              routeSettings.name,
+              arguments: routeSettings.arguments,
+              routesIcons: routeIcons,
+              child: const Shop(),
+            );
+          },
           transitionDuration: Duration.zero,
           reverseTransitionDuration: Duration.zero,
         );
