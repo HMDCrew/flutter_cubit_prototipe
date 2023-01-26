@@ -13,10 +13,18 @@ class Shop extends StatefulWidget {
 }
 
 class _ShopState extends State<Shop> {
-  List products = [];
-  int currentPage = 0;
-  bool nextPageAccess = true;
+  // List products = [];
+  //int currentPage = 0;
   ScrollController scrollController = ScrollController();
+
+  // placeholders
+  List<Widget> placeShop = prodPlaceholder();
+
+  static List<Widget> prodPlaceholder() {
+    ProductCard productPlace =
+        const ProductCard(id: 0, name: 'Loading...', loading: true);
+    return <Widget>[productPlace, productPlace, productPlace, productPlace];
+  }
 
   @override
   void initState() {
@@ -28,11 +36,10 @@ class _ShopState extends State<Shop> {
     scrollController.addListener(() {
       if (scrollController.offset ==
           scrollController.position.maxScrollExtent) {
-        if (nextPageAccess) {
-          currentPage = currentPage + 1;
-          BlocProvider.of<ShopCubit>(context)
-              .getProducts(page: currentPage + 1);
-        }
+        //currentPage = currentPage + 1;
+        //BlocProvider.of<ShopCubit>(context).getProducts(page: currentPage);
+        BlocProvider.of<ShopCubit>(context).loadMoreProducts();
+        print('end page');
       }
     });
   }
@@ -45,77 +52,49 @@ class _ShopState extends State<Shop> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ShopCubit, ShopState>(
-      listener: (context, state) {
-        //print(state);
-      },
-      buildWhen: (previous, current) {
-        //print(previous is ShopLoaded);
+    //List tmp = BlocProvider.of<ShopCubit>(context).getProductsLoaded();
+    //print(tmp.length);
 
-        if (current is ErrorShop) {
-          nextPageAccess = false;
-        }
-
-        return current is! ErrorShop && nextPageAccess;
-      },
+    return BlocBuilder<ShopCubit, ShopState>(
       builder: (_, state) {
-        //print('test');
         // Loaded
         if (state is ShopLoaded) {
-          products.addAll(state.products);
-          // if( products != state.products ){
-          //   print('diff');
-          // }
-          // state.update(products);
-          return Container(
-            margin: const EdgeInsets.all(16),
-            child: MasonryGridView.count(
-              physics: const BouncingScrollPhysics(),
-              controller: scrollController,
-              mainAxisSpacing: 11,
-              crossAxisSpacing: 11,
-              crossAxisCount: 2,
-              itemCount: products.length,
-              itemBuilder: (context, index) {
-                return ProductCard(
-                  id: products[index]['id'],
-                  name: products[index]['name'],
-                  image: products[index]['image_uri'],
-                  price: products[index]['price'],
-                  symbol: products[index]['symbol'],
-                  onTap: (ProductCard prod) {
-                    print(prod.id);
-                    print(prod.name);
-                  },
-                );
-              },
-            ),
-          );
+          // products = /* tmp.isNotEmpty ? tmp : */ state.products;
+          return buildProductsList(state.products);
         }
 
-        // Loading
-        ProductCard productPlace =
-            const ProductCard(id: 0, name: 'Loading...', loading: true);
-        final List<Widget> placeShop = <Widget>[
-          productPlace,
-          productPlace,
-          productPlace,
-          productPlace
-        ];
+        print(state is ShopLoaded);
 
-        return Container(
-          margin: const EdgeInsets.all(16),
-          child: MasonryGridView.count(
-            mainAxisSpacing: 11,
-            crossAxisSpacing: 11,
-            crossAxisCount: 2,
-            itemCount: placeShop.length,
-            itemBuilder: (context, index) {
-              return placeShop[index];
-            },
-          ),
-        );
+        // return buildProductsList(products);
+        return buildProductsList([]);
       },
     );
   }
+
+  Widget buildProductsList(List prods) => Container(
+        margin: const EdgeInsets.all(16),
+        child: MasonryGridView.count(
+          physics: const BouncingScrollPhysics(),
+          controller: prods.isNotEmpty ? scrollController : null,
+          mainAxisSpacing: 11,
+          crossAxisSpacing: 11,
+          crossAxisCount: 2,
+          itemCount: prods.isEmpty ? placeShop.length : prods.length,
+          itemBuilder: (context, index) {
+            return prods.isEmpty
+                ? placeShop[index]
+                : ProductCard(
+                    id: prods[index]['id'],
+                    name: prods[index]['name'],
+                    image: prods[index]['image_uri'],
+                    price: prods[index]['price'],
+                    symbol: prods[index]['symbol'],
+                    onTap: (ProductCard prod) {
+                      print(prod.id);
+                      print(prod.name);
+                    },
+                  );
+          },
+        ),
+      );
 }

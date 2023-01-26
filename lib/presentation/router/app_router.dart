@@ -58,7 +58,7 @@ class AppRouter {
         return PageRouteBuilder(
           pageBuilder: (context, animation1, animation2) {
             // ask api resources
-            BlocProvider.of<ShopCubit>(context).getProducts(page: 0);
+            BlocProvider.of<ShopCubit>(context).onInit(page: 1);
 
             return BottomBar(
               routeSettings.name,

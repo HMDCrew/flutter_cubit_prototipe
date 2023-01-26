@@ -64,7 +64,7 @@ class Main extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         onGenerateRoute: appRouter.onGeneratedRoute,
-        initialRoute: '/',
+        initialRoute: '/shop',
       ),
     );
   }

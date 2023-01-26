@@ -11,19 +11,18 @@ class ShopLoading extends ShopState {
   const ShopLoading();
 
   @override
-  List<Object> get props => [];  
+  List<Object> get props => [];
 }
 
 class ShopLoaded extends ShopState {
-  List _products;
-  List get products => _products;
+  final List prods;
+  final int page;
+  List get products => prods;
 
-  ShopLoaded(this._products);
-  
+  const ShopLoaded({required this.prods, required this.page});
+
   @override
-  List<Object> get props => [_products];
-
-  void update(List newProducts) => _products = newProducts;
+  List<Object> get props => [page, prods];
 }
 
 class ProductLoaded extends ShopState {
@@ -31,7 +30,7 @@ class ProductLoaded extends ShopState {
   Map<String, dynamic> get product => _product;
 
   const ProductLoaded(this._product);
-  
+
   @override
   List<Object> get props => [_product];
 }
@@ -40,7 +39,7 @@ class ErrorShop extends ShopState {
   final String message;
 
   const ErrorShop(this.message);
-  
+
   @override
   List<Object> get props => [message];
 }
