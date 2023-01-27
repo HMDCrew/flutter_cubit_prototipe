@@ -13,8 +13,6 @@ class Shop extends StatefulWidget {
 }
 
 class _ShopState extends State<Shop> {
-  // List products = [];
-  //int currentPage = 0;
   ScrollController scrollController = ScrollController();
 
   // placeholders
@@ -36,8 +34,6 @@ class _ShopState extends State<Shop> {
     scrollController.addListener(() {
       if (scrollController.offset ==
           scrollController.position.maxScrollExtent) {
-        //currentPage = currentPage + 1;
-        //BlocProvider.of<ShopCubit>(context).getProducts(page: currentPage);
         BlocProvider.of<ShopCubit>(context).loadMoreProducts();
         print('end page');
       }
@@ -52,20 +48,21 @@ class _ShopState extends State<Shop> {
 
   @override
   Widget build(BuildContext context) {
-    //List tmp = BlocProvider.of<ShopCubit>(context).getProductsLoaded();
-    //print(tmp.length);
-
     return BlocBuilder<ShopCubit, ShopState>(
       builder: (_, state) {
+
         // Loaded
         if (state is ShopLoaded) {
-          // products = /* tmp.isNotEmpty ? tmp : */ state.products;
           return buildProductsList(state.products);
         }
 
-        print(state is ShopLoaded);
+        // No products found
+        if (state is ErrorShop) {
+          return buildProductsList(
+              BlocProvider.of<ShopCubit>(context).shopProducts);
+        }
 
-        // return buildProductsList(products);
+        // Loading
         return buildProductsList([]);
       },
     );
@@ -90,6 +87,7 @@ class _ShopState extends State<Shop> {
                     price: prods[index]['price'],
                     symbol: prods[index]['symbol'],
                     onTap: (ProductCard prod) {
+                      Navigator.of(context).pushNamed('/product');
                       print(prod.id);
                       print(prod.name);
                     },

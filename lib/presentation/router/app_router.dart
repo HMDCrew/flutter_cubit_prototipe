@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_cubit_skeleton_routed/presentation/screens/product.dart';
 
 import '../../logic/cubit/banners_cubit.dart';
 import '../../logic/cubit/shop_cubit.dart';
@@ -27,7 +28,7 @@ class AppRouter {
           pageBuilder: (context, animation1, animation2) {
             // ask api resources
             BlocProvider.of<BannersCubit>(context).getBanners(
-              page: 0,
+              page: 1,
               includeMetas: 'banner_text, color_title, click_through_url',
             );
 
@@ -69,6 +70,27 @@ class AppRouter {
           },
           transitionDuration: Duration.zero,
           reverseTransitionDuration: Duration.zero,
+        );
+
+      case '/product':
+        return PageRouteBuilder(
+          fullscreenDialog: true,
+          pageBuilder: (context, animation, secondaryAnimation) {
+            return const Product();
+          },
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(0.0, 1.0);
+            const end = Offset.zero;
+            const curve = Curves.ease;
+
+            var tween =
+                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: child,
+            );
+          },
         );
 
       case '/cart':

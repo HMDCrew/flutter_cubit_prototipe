@@ -1,39 +1,28 @@
-import 'dart:ffi';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:products/products.dart';
+
+import '../cache/local_store.dart';
 
 part 'shop_state.dart';
 
 class ShopCubit extends Cubit<ShopState> {
   final ProductsApi _api;
   final int pageSize;
-  int page;
+  final LocalStore localStore;
+
+  int currentPage;
   List shopProducts = [];
-  ShopCubit(this._api, {this.pageSize = 10, this.page = 0})
+  ShopCubit(this._api, this.localStore, {this.pageSize = 10, this.currentPage = 1})
       : super(const ShopLoading());
 
-  void onInit({required int page}) async => shopProducts.isEmpty ? getProducts(page: page) : false;
+  void onInit({required int page}) async =>
+      shopProducts.isEmpty ? getProducts(page: currentPage) : false;
+
+  void loadMoreProducts() async => getProducts(page: currentPage += 1);
 
   void getProducts({required int page}) async {
-    // is used for load more
-    this.page = page;
-
-    final pageResult = await _api.getAllProducts(
-      page: page,
-      pageSize: pageSize,
-    );
-
-    pageResult.isError ||
-            pageResult.asValue == null ||
-            pageResult.asValue!.value.isEmpty
-        ? showError('no products found')
-        : setPageData(pageResult.asValue!.value);
-  }
-
-  void loadMoreProducts() async {
-    page += 1;
+    currentPage = page;
 
     final pageResult = await _api.getAllProducts(
       page: page,
@@ -71,7 +60,7 @@ class ShopCubit extends Cubit<ShopState> {
 
   void setPageData(List result) {
     shopProducts.addAll(result);
-    emit(ShopLoaded(prods: shopProducts, page: page));
+    emit(ShopLoaded(prods: shopProducts, page: currentPage));
   }
 
   void showError(String error) {

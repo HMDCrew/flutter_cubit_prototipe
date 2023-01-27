@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:transparent_image/transparent_image.dart';
 import '../placeholder.dart';
 
 class ProductCard extends StatelessWidget {
@@ -23,19 +22,36 @@ class ProductCard extends StatelessWidget {
 
   get productState => this;
 
+  Widget get placeholder => WPRPlaceholder(
+        wrapColumn: false,
+        content: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(3.0),
+            color: const Color.fromARGB(255, 0, 0, 0),
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     Widget imageContainer = loading
-        ? WPRPlaceholder(
-            wrapColumn: false,
-            content: DecoratedBox(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(3.0),
-                    color: const Color.fromARGB(255, 0, 0, 0))),
-          )
-        : image != null
-            ? Image.network(image!)
-            : Image.memory(kTransparentImage);
+        ? placeholder
+        : image!.isNotEmpty
+            ? Image.network(
+                image!,
+                frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                  if (frame == null) {
+                    return placeholder;
+                  }
+                  return child;
+                },
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+
+                  return placeholder;
+                },
+              )
+            : placeholder;
 
     return ElevatedButton(
       onPressed: () {
@@ -55,16 +71,22 @@ class ProductCard extends StatelessWidget {
             imageContainer,
             const SizedBox(height: 5),
             price != null && price!.isNotEmpty
-                ? Text("$symbol$price",
+                ? Text(
+                    "$symbol$price",
                     style: const TextStyle(
                         fontSize: 15,
                         color: Color.fromARGB(255, 30, 30, 30),
-                        fontWeight: FontWeight.bold))
+                        fontWeight: FontWeight.bold),
+                  )
                 : const Text(''),
             const SizedBox(height: 5),
-            Text(name,
-                style: const TextStyle(
-                    fontSize: 10, color: Color.fromARGB(255, 80, 80, 80)))
+            Text(
+              name,
+              style: const TextStyle(
+                fontSize: 10,
+                color: Color.fromARGB(255, 80, 80, 80),
+              ),
+            )
           ],
         ),
       ),
