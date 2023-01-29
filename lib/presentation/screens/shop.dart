@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_cubit_skeleton_routed/presentation/screens/product.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import '../../logic/cubit/shop_cubit.dart';
@@ -19,8 +20,8 @@ class _ShopState extends State<Shop> {
   List<Widget> placeShop = prodPlaceholder();
 
   static List<Widget> prodPlaceholder() {
-    ProductCard productPlace =
-        const ProductCard(id: 0, name: 'Loading...', loading: true);
+    ProductCard productPlace = const ProductCard(
+        id: 0, image: '', price: '', name: 'Loading...', loading: true);
     return <Widget>[productPlace, productPlace, productPlace, productPlace];
   }
 
@@ -50,7 +51,6 @@ class _ShopState extends State<Shop> {
   Widget build(BuildContext context) {
     return BlocBuilder<ShopCubit, ShopState>(
       builder: (_, state) {
-
         // Loaded
         if (state is ShopLoaded) {
           return buildProductsList(state.products);
@@ -87,9 +87,7 @@ class _ShopState extends State<Shop> {
                     price: prods[index]['price'],
                     symbol: prods[index]['symbol'],
                     onTap: (ProductCard prod) {
-                      Navigator.of(context).pushNamed('/product');
-                      print(prod.id);
-                      print(prod.name);
+                      Navigator.of(context).pushNamed('/product', arguments: prod);
                     },
                   );
           },

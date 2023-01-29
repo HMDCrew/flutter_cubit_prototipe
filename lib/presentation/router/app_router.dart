@@ -10,6 +10,33 @@ import '../screens/favorites.dart';
 import '../screens/profile.dart';
 import '../screens/shop.dart';
 import '../utils/bottom_bar.dart';
+import '../utils/shop/product_card.dart';
+
+class CustomPageRoute<T> extends PageRoute<T> {
+  CustomPageRoute(this.child);
+  @override
+  Color get barrierColor => Colors.transparent;
+
+  @override
+  String get barrierLabel => '';
+
+  final Widget child;
+
+  @override
+  Widget buildPage(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation) {
+    return FadeTransition(
+      opacity: animation,
+      child: child,
+    );
+  }
+
+  @override
+  bool get maintainState => true;
+
+  @override
+  Duration get transitionDuration => const Duration(milliseconds: 1000);
+}
 
 class AppRouter {
   Map<String, IconData> routeIcons = {
@@ -73,24 +100,19 @@ class AppRouter {
         );
 
       case '/product':
-        return PageRouteBuilder(
-          fullscreenDialog: true,
-          pageBuilder: (context, animation, secondaryAnimation) {
-            return const Product();
-          },
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(0.0, 1.0);
-            const end = Offset.zero;
-            const curve = Curves.ease;
-
-            var tween =
-                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-            return SlideTransition(
-              position: animation.drive(tween),
-              child: child,
-            );
-          },
+        return CustomPageRoute(
+          Product(product: routeSettings.arguments as ProductCard)
+          // fullscreenDialog: true,
+          // transitionDuration: const Duration(microseconds: 1000),
+          // pageBuilder: (context, animation, secondaryAnimation) {
+          //   return Product(product: routeSettings.arguments as ProductCard);
+          // },
+          // transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          //   return FadeTransition(
+          //     opacity: animation,
+          //     child: child,
+          //   );
+          // },
         );
 
       case '/cart':
