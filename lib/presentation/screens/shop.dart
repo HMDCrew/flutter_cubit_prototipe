@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_cubit_skeleton_routed/presentation/screens/product.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import '../../logic/cubit/shop_cubit.dart';
@@ -87,7 +86,8 @@ class _ShopState extends State<Shop> {
                     price: prods[index]['price'],
                     symbol: prods[index]['symbol'],
                     onTap: (ProductCard prod) {
-                      Navigator.of(context).pushNamed('/product', arguments: prod);
+                      Navigator.of(context)
+                          .pushNamed('/product', arguments: {'prod': prod});
                     },
                   );
           },

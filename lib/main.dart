@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'logic/cache/local_store.dart';
 import 'logic/cubit/auth_cubit.dart';
 import 'logic/cubit/banners_cubit.dart';
+import 'logic/cubit/product_cubit.dart';
 import 'logic/cubit/shop_cubit.dart';
 
 void main() async {
@@ -62,6 +63,9 @@ class Main extends StatelessWidget {
         ),
         BlocProvider<ShopCubit>(
           create: (BuildContext shopContext) => ShopCubit(productsApi, localStore),
+        ),
+        BlocProvider<ProductCubit>(
+          create: (BuildContext shopContext) => ProductCubit(productsApi, localStore),
         ),
       ],
       child: MaterialApp(

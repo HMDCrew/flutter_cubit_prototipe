@@ -50,14 +50,6 @@ class ShopCubit extends Cubit<ShopState> {
         : setPageData(searchResults.asValue!.value);
   }
 
-  void getProduct(String id) async {
-    final product = await _api.getProduct(productId: id);
-
-    product.isError || product.asValue == null || product.asValue!.value.isEmpty
-        ? showError('no product found')
-        : emit(ProductLoaded(product.asValue!.value));
-  }
-
   void setPageData(List result) {
     shopProducts.addAll(result);
     emit(ShopLoaded(prods: shopProducts, page: currentPage));

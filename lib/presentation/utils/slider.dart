@@ -3,12 +3,14 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class MySlider extends StatelessWidget {
   final List<Widget> slides;
+  final bool isColumn;
   final double height;
   final dynamic dotsEffect;
 
   MySlider(
       {Key? key,
       required this.slides,
+      this.isColumn = true,
       this.height = 250,
       this.dotsEffect = const ExpandingDotsEffect(
           activeDotColor: Color.fromARGB(255, 255, 255, 255))})
@@ -19,8 +21,8 @@ class MySlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
+
+    List<Widget> content = <Widget>[
         SizedBox(
           height: height,
           child: PageView(
@@ -35,7 +37,8 @@ class MySlider extends StatelessWidget {
           count: slides.length,
           effect: dotsEffect,
         )
-      ],
-    );
+      ];
+
+    return isColumn ? Column(children: content) : Stack(alignment: AlignmentDirectional.bottomCenter, children: content);
   }
 }

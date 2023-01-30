@@ -25,16 +25,6 @@ class ShopLoaded extends ShopState {
   List<Object> get props => [page, prods];
 }
 
-class ProductLoaded extends ShopState {
-  final Map<String, dynamic> _product;
-  Map<String, dynamic> get product => _product;
-
-  const ProductLoaded(this._product);
-
-  @override
-  List<Object> get props => [_product];
-}
-
 class ErrorShop extends ShopState {
   final String message;
 

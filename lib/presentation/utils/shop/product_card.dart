@@ -22,12 +22,11 @@ class ProductCard extends StatelessWidget {
 
   get productState => this;
 
-  Widget get placeholder => WPRPlaceholder(
+  Widget get placeholder => const WPRPlaceholder(
         wrapColumn: false,
         content: DecoratedBox(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(3.0),
-            color: const Color.fromARGB(255, 0, 0, 0),
+            color: Color.fromARGB(255, 0, 0, 0),
           ),
         ),
       );
@@ -53,47 +52,69 @@ class ProductCard extends StatelessWidget {
 
     return GestureDetector(
       child: Card(
-        elevation: 4.0,
+        color: Colors.white,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
         clipBehavior: Clip.antiAlias,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Hero(
-                tag: 'background_$id',
-                child: Container(color: Colors.white),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Hero(
+              tag: 'img_$id',
+              transitionOnUserGestures: true,
+              flightShuttleBuilder: (flightContext, animation, flightDirection,
+                  fromHeroContext, toHeroContext) {
+                return Stack(children: [
+                  Positioned.fill(
+                    child: FadeTransition(
+                        opacity: animation, child: fromHeroContext.widget),
+                  ),
+                  Positioned.fill(
+                      child: FadeTransition(
+                          opacity: ReverseAnimation(
+                              ModalRoute.of(context)?.secondaryAnimation ??
+                                  animation),
+                          child: toHeroContext.widget)),
+                ]);
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12.0),
+                child: Material(child: imageContainer),
               ),
-              Hero(
-                tag: 'img_$id',
-                child: imageContainer,
-              ),
-              const SizedBox(height: 5),
-              price.isNotEmpty
-                  ? Hero(
-                      tag: 'price_$id',
-                      child: Column(
-                        children: [
-                          Material(
-                            child: Text(
-                              "$symbol$price",
-                              style: const TextStyle(
-                                fontSize: 15,
-                                color: Color.fromARGB(255, 30, 30, 30),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 5),
-                        ],
+            ),
+            const SizedBox(height: 5),
+            price.isNotEmpty
+                ? Hero(
+                    tag: 'price_$id',
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
                       ),
-                    )
-                  : const Text(''),
-              Hero(
-                tag: 'title_$id',
+                      child: Material(
+                        color: Colors.transparent,
+                        child: Text(
+                          "$symbol$price",
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: Color.fromARGB(255, 30, 30, 30),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                : const SizedBox(height: 0),
+            Hero(
+              tag: 'title_$id',
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  bottom: 10,
+                  right: 10,
+                  left: 10,
+                ),
                 child: Material(
+                  color: Colors.transparent,
                   child: Text(
                     name,
                     style: const TextStyle(
@@ -103,8 +124,8 @@ class ProductCard extends StatelessWidget {
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       onTap: () {
