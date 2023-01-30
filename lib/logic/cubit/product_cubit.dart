@@ -9,8 +9,10 @@ part 'product_state.dart';
 class ProductCubit extends Cubit<ProductState> {
   final ProductsApi _api;
   final LocalStore localStore;
+  final String css;
+  final String js;
 
-  ProductCubit(this._api, this.localStore) : super(const ProductLoading());
+  ProductCubit(this._api, this.localStore, this.css, this.js) : super(const ProductLoading());
 
   void getProduct(String id) async {
     final product = await _api.getProduct(productId: id);

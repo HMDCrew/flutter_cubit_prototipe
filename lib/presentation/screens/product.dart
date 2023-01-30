@@ -156,16 +156,17 @@ class _ProductState extends State<Product> {
                               ..setNavigationDelegate(
                                 NavigationDelegate(),
                               )
-                              ..loadHtmlString(state.product['description'] +
-                                  '''<script> const resizeObserver = new ResizeObserver(entries => Resize.postMessage("height" + (entries[0].target.clientHeight).toString()) ) resizeObserver.observe(document.body) </script>''')
+                              ..loadHtmlString(
+                                  "<html><head><title>test</title><style>${BlocProvider.of<ProductCubit>(context).css}</style></head><body>${state.product['description']}<script> const resizeObserver = new ResizeObserver(entries => Resize.postMessage('height' + (entries[0].target.clientHeight).toString()) ) resizeObserver.observe(document.body) </script></body></html>")
                               ..addJavaScriptChannel("Resize",
                                   onMessageReceived:
                                       (JavaScriptMessage message) {
-                                        print(message);
+                                print(message);
                                 updateHeight();
                               }))
                         : const SizedBox(height: 0),
-/*
+
+                    /*
 JavascriptChannel(name: "Resize", onMessageReceived: (JavascriptMessage message) {
   updateHeight();
 })
@@ -208,7 +209,8 @@ JavascriptChannel(name: "Resize", onMessageReceived: (JavascriptMessage message)
   }
 
   void updateHeight() async {
-    final pageHeight = await controller.runJavaScriptReturningResult("document.documentElement.scrollHeight;");
+    final pageHeight = await controller
+        .runJavaScriptReturningResult("document.documentElement.scrollHeight;");
     double height = double.parse(pageHeight.toString());
 
     print(pageHeight);
